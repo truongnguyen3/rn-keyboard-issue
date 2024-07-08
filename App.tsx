@@ -1,118 +1,115 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TextInputProps,
+  TextInput as TextInputRN,
   View,
 } from 'react-native';
-
 import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  KeyboardAwareScrollView,
+  KeyboardProvider,
+} from 'react-native-keyboard-controller';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const TextInput = (props: TextInputProps) => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <TextInputRN
+      placeholderTextColor="#6c6c6c"
+      style={styles.textInput}
+      multiline
+      numberOfLines={2}
+      testID={props.placeholder}
+      {...props}
+      placeholder={`${props.placeholder} (${
+        props.keyboardType === 'default' ? 'text' : 'numeric'
+      })`}
+    />
+  );
+};
+
+function Header() {
+  return (
+    <View
+      style={{
+        height: 200,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#DCA47C',
+      }}>
+      <Text>Header</Text>
     </View>
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+function Footer() {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View
+      style={{
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#698474',
+      }}>
+      <Text>Footer</Text>
+    </View>
+  );
+}
+
+function TableView() {
+  return (
+    <KeyboardAwareScrollView
+      bottomOffset={0}
+      style={styles.container}
+      contentContainerStyle={styles.content}>
+      {new Array(10).fill(0).map((_, i) => (
+        <TextInput
+          key={i}
+          placeholder={`TextInput#${i}`}
+          keyboardType={i % 2 === 0 ? 'numeric' : 'default'}
+        />
+      ))}
+    </KeyboardAwareScrollView>
+  );
+}
+
+function Main() {
+  return (
+    <View style={{
+      flex: 1
+      }}>
+      <Header />
+      <TableView />
+      <Footer />
+    </View>
+  );
+}
+
+export default function AwareScrollView() {
+  return (
+    <KeyboardProvider>
+      <Main />
+    </KeyboardProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    paddingHorizontal: 16,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  content: {
+    paddingTop: 50,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  textInput: {
+    width: '100%',
+    minHeight: 50,
+    maxHeight: 200,
+    // marginBottom: 50,
+    marginBottom: 5,
+    borderColor: 'black',
+    borderWidth: 2,
+    marginRight: 160,
+    borderRadius: 10,
+    color: 'black',
+    paddingHorizontal: 12,
   },
 });
-
-export default App;
